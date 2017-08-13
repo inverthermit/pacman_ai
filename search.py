@@ -75,11 +75,11 @@ class Node:
         self.action = action
 
 def pushByCost(collection, element):
-    collection.push(element)
+    collection.push(((element[0], element[1], element[2]), element[2]))
 
 
 
-def search(problem, collection, insertFunction=pushByCost):
+def searchOld(problem, collection, insertFunction=pushByCost):
     start = problem.getStartState()
     insertFunction(collection,(start,[], 0))
     # collection.push((start,[], 0))
@@ -90,7 +90,7 @@ def search(problem, collection, insertFunction=pushByCost):
     while (not collection.isEmpty()):
         # print(stack)
         stateSpace = collection.pop()
-        # print(stateSpace)
+        # print('stateSpace:',stateSpace)
         if(problem.isGoalState(stateSpace[0])):
             return stateSpace[1]
         if(stateSpace[0] in visited):
@@ -110,6 +110,71 @@ def search(problem, collection, insertFunction=pushByCost):
                 # print(stateSpace)
                 # collection.push((element[0],stateSpace[1]+[element[1]],stateSpace[2]+element[2]))
                 insertFunction(collection, (element[0],stateSpace[1]+[element[1]],stateSpace[2]+element[2]))
+
+    return []
+
+# work well for A*
+def search(problem, collection, insertFunction=pushByCost):
+    start = problem.getStartState()
+    insertFunction(collection,(start,[], 0))
+    # collection.push((start,[], 0))
+    #((2, 1), 'South', 1)
+    # printCollection(collection)
+    result = []
+    visited = set()
+    while (not collection.isEmpty()):
+        # print(stack)
+        stateSpace = collection.pop()
+        # print(stateSpace[0][0])
+        # print('stateSpace:',stateSpace)
+        if(problem.isGoalState(stateSpace[0][0])):
+            # print('getGoal!')
+            # print(stateSpace)
+            return stateSpace[0][1]
+        # if(stateSpace[0][0] in visited):
+        #     continue
+        if(stateSpace[0][0] in visited):
+            continue
+        visited.add(stateSpace[0][0])
+        # print(visited)
+        # print('In while')
+        # printCollection(collection)
+        #result.append(stateSpace[1])
+
+        # print((stateSpace))
+        # print(problem.getSuccessors(stateSpace[0]))
+        successors = problem.getSuccessors(stateSpace[0][0])
+        for element in successors:
+            insertFunction(collection, (element[0],stateSpace[0][1]+[element[1]],stateSpace[0][2]+element[2]))
+
+    return []
+def search2(problem, collection, insertFunction=pushByCost):
+    start = problem.getStartState()
+    insertFunction(collection,(start,[], 0))
+    # collection.push((start,[], 0))
+    #((2, 1), 'South', 1)
+    # printCollection(collection)
+    result = []
+    # visited = set()
+    while (not collection.isEmpty()):
+        # print(stack)
+        stateSpace = collection.pop()
+        print('stateSpace:',stateSpace)
+        if(problem.isGoalState(stateSpace[0])):
+            return stateSpace[1]
+        # if(stateSpace[0] in visited):
+        #     continue
+        # visited.add(stateSpace[0])
+        # print(visited)
+        # print('In while')
+        # printCollection(collection)
+        #result.append(stateSpace[1])
+
+        # print((stateSpace))
+        # print(problem.getSuccessors(stateSpace[0]))
+        successors = problem.getSuccessors(stateSpace[0])
+        for element in successors:
+            insertFunction(collection, (element[0],stateSpace[1]+[element[1]],stateSpace[2]+element[2]))
 
     return []
 
@@ -147,13 +212,14 @@ def breadthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
     collection = util.Queue()
     result = search(problem, collection)
+    print(result)
     return result
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     def priorityFunction(stateSpace):
-        return stateSpace[2]
+        return stateSpace[1]
     collection = util.PriorityQueueWithFunction(priorityFunction)
     result = search(problem, collection)
     return result
@@ -172,9 +238,9 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
     def pushByCostHeuristic(collection, element, heuristic = heuristic, problem = problem):
         fn = element[2] + heuristic(element[0], problem)
-        collection.push((element[0], element[1], fn))
+        collection.push(((element[0], element[1], element[2]), fn))
     def priorityFunction(stateSpace):
-        return stateSpace[2]
+        return stateSpace[1]
     collection = util.PriorityQueueWithFunction(priorityFunction)
     result = search(problem, collection, pushByCostHeuristic)
     return result
