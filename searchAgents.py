@@ -383,6 +383,22 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
+    def manhattanDistance(xy1, xy2):
+        return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+    # print(state)
+    cornersLeft = state[1]
+    currentLocation = state[0]
+    lastCorner = currentLocation
+    heuristic = 0
+    count = 0
+    for corner in cornersLeft:
+        len2Corner = manhattanDistance(currentLocation, corner)
+        if(count == 0 or heuristic < len2Corner):
+            heuristic = len2Corner
+        count +=1
+    return heuristic
+
+
     return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
@@ -477,7 +493,29 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    # print(foodGrid.asList())
+    #
+    #
+    # raise ValueError("finished print")
+    import math
+    def euclideanDistance(xy1, xy2):
+        return math.sqrt((xy1[0]-xy2[0])**2+(xy1[1]-xy2[1])**2)
+    def manhattanDistance(xy1, xy2):
+        return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+
+
+    # return cornersHeuristic(state, problem)
+    cornersLeft = tuple(foodGrid.asList())
+    currentLocation = position
+    lastCorner = currentLocation
+    heuristic = 0
+    count = 0
+    for corner in cornersLeft:
+        len2Corner = manhattanDistance(currentLocation, corner)
+        if(count == 0 or heuristic < len2Corner):
+            heuristic = len2Corner
+        count +=1
+    return heuristic
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -508,7 +546,8 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        return search.astar(problem)
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -544,7 +583,9 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        if(self.food[x][y]):
+            return True
+        return False
 
 def mazeDistance(point1, point2, gameState):
     """
