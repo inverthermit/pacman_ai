@@ -288,6 +288,7 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        self.startingGameState = startingGameState
         self.cornerVisited = set()
         # For display purposes
         self._visited, self._visitedlist, self._expanded = {}, [], 0 # DO NOT CHANGE
@@ -392,7 +393,7 @@ def cornersHeuristic(state, problem):
     heuristic = 0
     count = 0
     for corner in cornersLeft:
-        len2Corner = manhattanDistance(currentLocation, corner)
+        len2Corner = mazeDistance(currentLocation, corner, problem.startingGameState)
         if(count == 0 or heuristic < len2Corner):
             heuristic = len2Corner
         count +=1
@@ -511,7 +512,7 @@ def foodHeuristic(state, problem):
     heuristic = 0
     count = 0
     for corner in cornersLeft:
-        len2Corner = manhattanDistance(currentLocation, corner)
+        len2Corner = mazeDistance(currentLocation, corner, problem.startingGameState)
         if(count == 0 or heuristic < len2Corner):
             heuristic = len2Corner
         count +=1
