@@ -393,7 +393,13 @@ def cornersHeuristic(state, problem):
     heuristic = 0
     count = 0
     for corner in cornersLeft:
-        len2Corner = mazeDistance(currentLocation, corner, problem.startingGameState)
+        len2Corner = manhattanDistance(currentLocation, corner)
+        # strKey = str(currentLocation)+''+str(corner)
+        # if(strKey in problem.heuristicInfo):
+        #     len2Corner = problem.heuristicInfo[strKey]
+        # else:
+        #     len2Corner = manhattanDistance(currentLocation, corner, problem.startingGameState)
+        #     problem.heuristicInfo[strKey] = len2Corner
         if(count == 0 or heuristic < len2Corner):
             heuristic = len2Corner
         count +=1
@@ -494,7 +500,6 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-
     # print(foodGrid.asList())
     #
     #
@@ -513,7 +518,12 @@ def foodHeuristic(state, problem):
     heuristic = 0
     count = 0
     for corner in cornersLeft:
-        len2Corner = mazeDistance(currentLocation, corner, problem.startingGameState)
+        strKey = str(currentLocation)+''+str(corner)
+        if(strKey in problem.heuristicInfo):
+            len2Corner = problem.heuristicInfo[strKey]
+        else:
+            len2Corner = mazeDistance(currentLocation, corner, problem.startingGameState)
+            problem.heuristicInfo[strKey] = len2Corner
         if(count == 0 or heuristic < len2Corner):
             heuristic = len2Corner
         count +=1
